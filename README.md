@@ -1,0 +1,2 @@
+# SynthesiaAnalyzer
+Synthesia等の鍵盤が光る動画をMIDIとしてエクスポートするプログラム
