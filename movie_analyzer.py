@@ -32,7 +32,9 @@ def analyze(keys: dict, target_file: str, channels: list, midi_file: str = None,
     # 画像認識関連
     cap = cv2.VideoCapture(target_file)
     fps = cap.get(cv2.CAP_PROP_FPS)  # fps
+    frame_all = cap.get(cv2.CAP_PROP_FRAME_COUNT)
     frame_rate = int((1 / fps) * 1000)  # 1フレーム当たりのミリ秒
+    frame_count = 0  # 処理したフレーム数
     ms = 0  # その時点での時間
 
     # MIDI関連
@@ -43,6 +45,8 @@ def analyze(keys: dict, target_file: str, channels: list, midi_file: str = None,
     if export_as_midi:
         midi = MIDIExporter(midi_file, tempo)
         tick = (60 / tempo) / 480  # 1拍=480tick
+
+    print('Analyzing {}...'.format(target_file))
 
     while True:
         ret, frame = cap.read()
@@ -71,7 +75,6 @@ def analyze(keys: dict, target_file: str, channels: list, midi_file: str = None,
                     # この時間に初めてキーが押されているならば
                     if k not in available_keys[i].keys():
                         available_keys[i][k] = ms  # キーが押されたとして登録する
-                        print(ms, k)
 
                 # ひとつ前の時間では押されていたがこの時点でキーが離されたならば
                 elif k in available_keys[i].keys():
@@ -96,11 +99,18 @@ def analyze(keys: dict, target_file: str, channels: list, midi_file: str = None,
             cv2.waitKey(1)
 
         ms += frame_rate
+        frame_count += 1
+
+        rate = frame_count / frame_all * 100
+        progress = '[{}{}]'.format('#' * round(rate), ' ' * (100 - round(rate)))
+        print('\r{} {}%'.format(progress, str(round(rate, 1))), end='')
 
     cap.release()
 
     # MIDIファイルとして保存する
     if export_as_midi:
+        print('\nSaving {}...'.format(midi_file))
         midi.export()
+        print('Saved: {}'.format(midi_file))
 
     return result
