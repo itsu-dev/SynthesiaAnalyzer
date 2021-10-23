@@ -14,6 +14,7 @@ class MIDIExporter:
 
     def append_note(self, channel, velocity, pitch, start, end):
         pitch = pitch.replace('s', '#')
+        pitch = pitch[0:len(pitch) - 1] + str(int(pitch[len(pitch) - 1:len(pitch)]) + 1)
         note_number = pretty_midi.note_name_to_number(pitch)
         note = pretty_midi.Note(velocity=velocity, pitch=note_number, start=start, end=end)
         self.instruments[channel].notes.append(note)

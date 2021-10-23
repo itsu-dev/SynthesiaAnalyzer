@@ -42,10 +42,9 @@ elements = movie_analyzer.analyze(
     keys,
     'test.mp4',  # 読み込む動画ファイル
     [
-        Channel(color=color_yellow, program=1, velocity=100, name='Piano1'),  # チャンネル0
-        Channel(color=color_red, program=1, velocity=100, name='Piano2')  # チャンネル1
-    ],
-    'test.mid',  # MIDI出力先
+        Channel(color=color_yellow, program=11, velocity=100, name='Piano1'),  # チャンネル0
+        Channel(color=color_red, program=11, velocity=100, name='Piano2')  # チャンネル1
+    ],   'test.mid',  # MIDI出力先
     120  # テンポ
 )
 
